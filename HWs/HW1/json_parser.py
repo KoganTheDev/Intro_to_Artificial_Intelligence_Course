@@ -1,11 +1,7 @@
-"""
-HW1.py
-
-Parses a JSON description of a game tree into Node objects
-and prints a concise summary and pretty-printed tree.
-"""
+import os
+import glob
+import errno
 import json
-
 
 class Node:
     def __init__(self, name, type, children=None, value=None, parent=None):
@@ -24,9 +20,43 @@ class Node:
         return f"Node({self.name!r}, {self.type}, children={len(self.children)})"
 
 
+def list_leaves(root):
+    leaves = []
+
+    def dfs(n):
+        if n.is_leaf():
+            leaves.append(n)
+        for c in n.children:
+            dfs(c)
+
+    dfs(root)
+    return leaves
+
 class JSONTreeParserError(Exception):
     pass
 
+def raise_no_json_files_found(start_directory):
+    '''
+    Raises a FileNotFoundError if no JSON files were found
+    '''
+    error_message = f"No JSON files found in directory: {start_directory}"
+    raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), error_message)
+
+def find_json_files(start_directory):
+    '''
+    Looks for JSON files recursively and returns them as an array
+    
+    :param start_directory: starting directory from which we search for files that have a specific file extension
+    '''
+    full_pattern = os.path.join(start_directory, "**", "*.json")
+    found_files = glob.glob(full_pattern, recursive=True)
+    
+    found_files = [f for f in glob.glob(full_pattern, recursive=True) if os.path.isfile(f)] 
+    
+    if not found_files:
+        raise_no_json_files_found(start_directory)
+    
+    return found_files
 
 def parse_tree_from_dict(data):
     """Parse a dictionary (loaded JSON) describing a tree and return the root Node.
@@ -115,54 +145,4 @@ def parse_tree_from_json_string(json_text):
     data = json.loads(json_text)
     return parse_tree_from_dict(data)
 
-
-def list_leaves(root):
-    leaves = []
-
-    def dfs(n):
-        if n.is_leaf():
-            leaves.append(n)
-        for c in n.children:
-            dfs(c)
-
-    dfs(root)
-    return leaves
-
-
-def pretty_print(root, indent=0):
-    prefix = "  " * indent
-    if root.is_leaf():
-        print(f"{prefix}- {root.name} (leaf) value={root.value}")
-    else:
-        print(f"{prefix}- {root.name} ({root.type})")
-        for c in root.children:
-            pretty_print(c, indent + 1)
-
-
-if __name__ == "__main__":
-    # Demo using the example from the assignment attachment
-    sample_json = '''
-    {
-      "root": "A",
-      "nodes": {
-        "A": { "type": "max", "children": ["B", "C"] },
-        "B": { "type": "min", "children": ["D", "E"] },
-        "C": { "type": "leaf", "value": 3 },
-        "D": { "type": "leaf", "value": 5 },
-        "E": { "type": "leaf", "value": -2 }
-      }
-    }
-    '''
-
-    print("[demo] Loading sample JSON and building tree...")
-    root = parse_tree_from_json_string(sample_json)
-
-    print("\n[demo] Pretty-printed tree:")
-    pretty_print(root)
-
-    leaves = list_leaves(root)
-    print("\n[demo] Leaves and their values:")
-    for lf in leaves:
-        print(f"  - {lf.name}: {lf.value}")
-
-    print(f"\n[demo] Root: {root.name}, total leaves: {len(leaves)}")
+        

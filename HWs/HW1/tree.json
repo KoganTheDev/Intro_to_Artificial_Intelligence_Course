@@ -1,0 +1,10 @@
+{
+      "root": "A",
+      "nodes": {
+        "A": { "type": "max", "children": ["B", "C"] },
+        "B": { "type": "min", "children": ["D", "E"] },
+        "C": { "type": "leaf", "value": 3 },
+        "D": { "type": "leaf", "value": 5 },
+        "E": { "type": "leaf", "value": -2 }
+      }
+    }
