@@ -5,6 +5,15 @@ import json
 
 class Node:
     def __init__(self, name, type, children=None, value=None, parent=None):
+        """
+        Initialize a tree node.
+        
+        :param name: Unique identifier for the node
+        :param type: Node type ('leaf', 'max', or 'min')
+        :param children: List of child Node objects (default: empty list)
+        :param value: Value of the node (only for leaf nodes)
+        :param parent: Parent Node object (default: None)
+        """
         self.name = name
         self.type = type
         self.children = children if children is not None else []
@@ -12,15 +21,31 @@ class Node:
         self.parent = parent
 
     def is_leaf(self):
+        """
+        Check if the node is a leaf node.
+        
+        :return: True if node is a leaf, False otherwise
+        """
         return self.type == "leaf"
 
     def __repr__(self):  # concise repr for prints
+        """
+        Return a concise string representation of the node.
+        
+        :return: String representation of the node
+        """
         if self.is_leaf():
             return f"Node({self.name!r}, leaf, value={self.value})"
         return f"Node({self.name!r}, {self.type}, children={len(self.children)})"
 
 
 def list_leaves(root):
+    """
+    Recursively traverse the tree and return all leaf nodes.
+    
+    :param root: Root node of the tree
+    :return: List of all leaf nodes found in the tree
+    """
     leaves = []
 
     def dfs(n):
@@ -36,18 +61,23 @@ class JSONTreeParserError(Exception):
     pass
 
 def raise_no_json_files_found(start_directory):
-    '''
-    Raises a FileNotFoundError if no JSON files were found
-    '''
+    """
+    Raise a FileNotFoundError when no JSON files are found.
+    
+    :param start_directory: Directory where search was performed
+    :raises FileNotFoundError: Always raises with appropriate errno
+    """
     error_message = f"No JSON files found in directory: {start_directory}"
     raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), error_message)
 
 def find_json_files(start_directory):
-    '''
-    Looks for JSON files recursively and returns them as an array
+    """
+    Find all JSON files recursively in a directory.
     
-    :param start_directory: starting directory from which we search for files that have a specific file extension
-    '''
+    :param start_directory: Starting directory for recursive search
+    :return: List of absolute paths to all JSON files found
+    :raises FileNotFoundError: If no JSON files are found in the directory tree
+    """
     full_pattern = os.path.join(start_directory, "**", "*.json")
     found_files = glob.glob(full_pattern, recursive=True)
     
@@ -59,7 +89,8 @@ def find_json_files(start_directory):
     return found_files
 
 def parse_tree_from_dict(data):
-    """Parse a dictionary (loaded JSON) describing a tree and return the root Node.
+    """
+    Parse a dictionary (loaded JSON) describing a tree and return the root Node.
 
     Expected format:
     {
@@ -73,7 +104,11 @@ def parse_tree_from_dict(data):
       }
     }
 
-    This function only builds the Node graph and performs validation.
+    This function builds the Node graph, validates structure and constraints.
+    
+    :param data: Dictionary parsed from JSON containing tree structure
+    :return: Root node of the constructed tree
+    :raises JSONTreeParserError: If data format is invalid or constraints are violated
     """
     if not isinstance(data, dict):
         raise JSONTreeParserError("Input data must be a dictionary (parsed JSON).")
@@ -95,8 +130,11 @@ def parse_tree_from_dict(data):
             raise JSONTreeParserError(f"Node spec for '{name}' must be a dict with a 'type'.")
         ntype = spec["type"]
         if ntype == "leaf":
+            # Leaf nodes must have a value and must not declare children
             if "value" not in spec:
                 raise JSONTreeParserError(f"Leaf node '{name}' missing 'value'.")
+            if "children" in spec:
+                raise JSONTreeParserError(f"Leaf node '{name}' must not have 'children' specified.")
             node = Node(name=name, type="leaf", value=spec["value"])
         else:
             # max/min expected to have children
@@ -142,7 +180,14 @@ def parse_tree_from_dict(data):
 
 
 def parse_tree_from_json_string(json_text):
+    """
+    Parse a JSON string describing a tree and return the root Node.
+    
+    :param json_text: JSON string containing tree structure
+    :return: Root node of the constructed tree
+    :raises JSONTreeParserError: If JSON format is invalid or tree constraints are violated
+    :raises json.JSONDecodeError: If JSON text is malformed
+    """
     data = json.loads(json_text)
     return parse_tree_from_dict(data)
 
-        
