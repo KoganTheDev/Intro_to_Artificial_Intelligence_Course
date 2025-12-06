@@ -2,8 +2,7 @@ import utils
 import json_parser as jp
 import json
 import sys
-
-from HWs.HW1.src.mini_max import miniMax
+import mini_max
 
 '''
 sample_json = ''
@@ -42,7 +41,7 @@ def run_miniMax(path):
                 print(f"\nOriginal tree (before miniMax):")
                 utils.pretty_print(root)
 
-                miniMax(root)
+                mini_max.miniMax(root)
                 # Print after miniMax
                 print(f"\nTree after miniMax:")
                 utils.pretty_print(root)
