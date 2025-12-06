@@ -9,9 +9,12 @@ def pretty_print(root, indent=0):
     """
     prefix = "  " * indent
     if root.is_leaf():
-        print(f"{prefix}- {root.name} (leaf) value={root.value}")
+        print(f"{prefix}- {root.name} (leaf) value={root.value:.1f}")
     else:
-        print(f"{prefix}- {root.name} ({root.type})")
+        if root.value == None:
+            print(f"{prefix}- {root.name} ({root.type})")
+        else:
+            print(f"{prefix}- {root.name} ({root.type}) value={root.value:.1f}")
         for c in root.children:
             pretty_print(c, indent + 1)
 

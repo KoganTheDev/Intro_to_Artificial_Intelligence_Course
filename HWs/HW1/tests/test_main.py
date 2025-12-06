@@ -2,7 +2,7 @@
 Comprehensive test suite for main module.
 
 Tests cover:
-- TEMP_REFACTOR function with file I/O
+- run_miniMax function with file I/O
 - main function with command-line args and user input
 - Error handling and edge cases
 - Mock file operations to avoid side effects
@@ -23,7 +23,7 @@ import utils as utils
 
 
 class TestTempRefactor:
-    """Test suite for TEMP_REFACTOR function."""
+    """Test suite for run_miniMax function."""
     
     def test_valid_json_file(self):
         """Test processing a valid JSON file."""
@@ -43,7 +43,7 @@ class TestTempRefactor:
         try:
             captured_output = StringIO()
             sys.stdout = captured_output
-            main.TEMP_REFACTOR(temp_path)
+            main.run_miniMax(temp_path)
             sys.stdout = sys.__stdout__
             
             output = captured_output.getvalue()
@@ -70,7 +70,7 @@ class TestTempRefactor:
         try:
             captured_output = StringIO()
             sys.stdout = captured_output
-            main.TEMP_REFACTOR(temp_path)
+            main.run_miniMax(temp_path)
             sys.stdout = sys.__stdout__
             
             output = captured_output.getvalue()
@@ -97,7 +97,7 @@ class TestTempRefactor:
         try:
             captured_output = StringIO()
             sys.stdout = captured_output
-            main.TEMP_REFACTOR(temp_path)
+            main.run_miniMax(temp_path)
             sys.stdout = sys.__stdout__
             
             output = captured_output.getvalue()
@@ -126,7 +126,7 @@ class TestTempRefactor:
         try:
             captured_output = StringIO()
             sys.stdout = captured_output
-            main.TEMP_REFACTOR(temp_path)
+            main.run_miniMax(temp_path)
             sys.stdout = sys.__stdout__
             
             output = captured_output.getvalue()
@@ -345,7 +345,7 @@ class TestEdgeCases:
         try:
             captured_output = StringIO()
             sys.stdout = captured_output
-            main.TEMP_REFACTOR(temp_path)
+            main.run_miniMax(temp_path)
             sys.stdout = sys.__stdout__
             
             output = captured_output.getvalue()
@@ -370,7 +370,7 @@ class TestEdgeCases:
         try:
             captured_output = StringIO()
             sys.stdout = captured_output
-            main.TEMP_REFACTOR(temp_path)
+            main.run_miniMax(temp_path)
             sys.stdout = sys.__stdout__
             
             output = captured_output.getvalue()
@@ -395,7 +395,7 @@ class TestEdgeCases:
         try:
             captured_output = StringIO()
             sys.stdout = captured_output
-            main.TEMP_REFACTOR(temp_path)
+            main.run_miniMax(temp_path)
             sys.stdout = sys.__stdout__
             
             output = captured_output.getvalue()

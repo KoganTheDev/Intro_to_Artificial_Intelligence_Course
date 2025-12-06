@@ -79,8 +79,7 @@ def find_json_files(start_directory):
     :raises FileNotFoundError: If no JSON files are found in the directory tree
     """
     full_pattern = os.path.join(start_directory, "**", "*.json")
-    found_files = glob.glob(full_pattern, recursive=True)
-    
+
     found_files = [f for f in glob.glob(full_pattern, recursive=True) if os.path.isfile(f)] 
     
     if not found_files:
